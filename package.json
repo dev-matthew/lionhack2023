@@ -1,0 +1,27 @@
+{
+  "name": "lionhack2023",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dev-matthew/lionhack2023.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dev-matthew/lionhack2023/issues"
+  },
+  "homepage": "https://github.com/dev-matthew/lionhack2023#readme",
+  "devDependencies": {
+    "hardhat": "^2.13.1"
+  },
+  "dependencies": {
+    "@axelar-network/axelar-gmp-sdk-solidity": "^3.3.0",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "dotenv": "^16.0.3"
+  }
+}
