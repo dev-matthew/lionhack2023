@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import { IAxelarGateway } from '@axelar-network/axelar-gmp-sdk-solidity/contracts/interfaces/IAxelarGateway.sol';
+import { IAxelarGasService } from '@axelar-network/axelar-gmp-sdk-solidity/contracts/interfaces/IAxelarGasService.sol';
 
 contract Governance {
 
@@ -20,13 +21,14 @@ contract Governance {
         address gateway;
         string destinationChain;
         string protocolAddress;
+        IAxelarGasService gasSerivce;
     }
 
     Protocol[] protocols;
     
-    constructor(address[] memory gateways_, string[] memory destinationChains_, string[] memory protocols_) {
+    constructor(address[] memory gateways_, string[] memory destinationChains_, string[] memory protocols_, address[] memory gasReceivers_) {
         for (uint i = 0; i < gateways_.length; i += 1) {
-            protocols.push(Protocol(gateways_[i], destinationChains_[i], protocols_[i]));
+            protocols.push(Protocol(gateways_[i], destinationChains_[i], protocols_[i], IAxelarGasService(gasReceivers_[i])));
         }
     }
 
@@ -54,11 +56,21 @@ contract Governance {
         }
     }
 
-    function endVote(uint256 voteId_) public {
+    function endVote(uint256 voteId_) public payable {
         require(voteIdToVote[voteId_].end >= block.timestamp, 'Voting period has not ended');
 
         if (voteIdToVote[voteId_].yes > voteIdToVote[voteId_].no) {
             for (uint i = 0; i < protocols.length; i += 1) {
+                /*if (msg.value > 0) {
+                    gasService.payNativeGasForContractCall{ value: msg.value }(
+                        address(this),
+                        destinationChain,
+                        destinationAddress,
+                        payload,
+                        msg.sender
+                    );
+                }*/
+
                 bytes memory payload = abi.encode(voteIdToVote[voteId_].newContract);
                 IAxelarGateway(protocols[i].gateway).callContract(protocols[i].destinationChain, protocols[i].protocolAddress, payload);
             }

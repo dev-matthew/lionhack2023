@@ -2,11 +2,9 @@
 pragma solidity ^0.8.0;
 
 import { AxelarExecutable } from '@axelar-network/axelar-gmp-sdk-solidity/contracts/executable/AxelarExecutable.sol';
-import { IAxelarGasService } from '@axelar-network/axelar-gmp-sdk-solidity/contracts/interfaces/IAxelarGasService.sol';
 
 contract Protocol is AxelarExecutable {
 
-    IAxelarGasService public immutable gasService;
     address logicAddress;
 
     /**
@@ -17,7 +15,6 @@ contract Protocol is AxelarExecutable {
         Gas Service Contract: 0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6
      */
     constructor(address gateway_, address gasReceiver_, address logicAddress_) AxelarExecutable(gateway_) {
-        gasService = IAxelarGasService(gasReceiver_);
         logicAddress = logicAddress_;
     }
 
