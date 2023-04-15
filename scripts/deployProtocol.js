@@ -10,9 +10,6 @@ const main = async () => {
   const contract = await contractFactory.deploy(fuji_gateway, fuji_gas, zero_address);
   await contract.deployed();
   console.log("Contract deployed to:", contract.address);
-
-  /*const originalAddress = await contract.getLogicAddress();
-  console.log(originalAddress);*/
 }
 
 const runMain = async () => {

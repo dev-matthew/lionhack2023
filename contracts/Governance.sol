@@ -47,7 +47,7 @@ contract Governance {
 
     function castVote(uint256 voteId_, bool yes_) public {
         require(voteIdToVote[voteId_].end > 0, 'Invalid Vote ID');
-        require(voteIdToVote[voteId_].end < block.timestamp, 'Voting period has ended');
+        require(voteIdToVote[voteId_].end > block.timestamp, 'Voting period has ended');
 
         if (yes_) {
             voteIdToVote[voteId_].yes += 1;
@@ -57,21 +57,23 @@ contract Governance {
     }
 
     function endVote(uint256 voteId_) public payable {
-        require(voteIdToVote[voteId_].end >= block.timestamp, 'Voting period has not ended');
+        require(voteIdToVote[voteId_].end <= block.timestamp, 'Voting period has not ended');
 
-        if (voteIdToVote[voteId_].yes > voteIdToVote[voteId_].no) {
+        if (voteIdToVote[voteId_].yes >= voteIdToVote[voteId_].no) {
             for (uint i = 0; i < protocols.length; i += 1) {
-                /*if (msg.value > 0) {
-                    gasService.payNativeGasForContractCall{ value: msg.value }(
+
+                bytes memory payload = abi.encode(voteIdToVote[voteId_].newContract);
+
+                if (msg.value > 0) {
+                    protocols[i].gasSerivce.payNativeGasForContractCall{ value: msg.value / protocols.length } (
                         address(this),
-                        destinationChain,
-                        destinationAddress,
+                        protocols[i].destinationChain,
+                        protocols[i].protocolAddress,
                         payload,
                         msg.sender
                     );
-                }*/
+                }
 
-                bytes memory payload = abi.encode(voteIdToVote[voteId_].newContract);
                 IAxelarGateway(protocols[i].gateway).callContract(protocols[i].destinationChain, protocols[i].protocolAddress, payload);
             }
         }
