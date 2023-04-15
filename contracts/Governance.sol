@@ -1,50 +1,67 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import { AxelarExecutable } from '@axelar-network/axelar-gmp-sdk-solidity/contracts/executable/AxelarExecutable.sol';
 import { IAxelarGateway } from '@axelar-network/axelar-gmp-sdk-solidity/contracts/interfaces/IAxelarGateway.sol';
-import { IAxelarGasService } from '@axelar-network/axelar-gmp-sdk-solidity/contracts/interfaces/IAxelarGasService.sol';
 
-contract Governance is AxelarExecutable {
+contract Governance {
 
-    IAxelarGasService public immutable gasService;
-    address protocolAddress;
-
-    uint256 currentVoteId = 0;
-    mapping(uint256 => uint256) voteIdToVoteYes;
-    mapping(uint256 => uint256) voteIdToVoteNo;
-    mapping(uint256 => uint256) voteIdToEnd;
-
-    /**
-        Axelar Testnet Contract Addresses: https://docs.axelar.dev/dev/reference/testnet-contract-addresses
-        
-        Avalanche Fuji
-        Gateway Contract: 0xC249632c2D40b9001FE907806902f63038B737Ab
-        Gas Service Contract: 0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6
-     */
-    constructor(address gateway_, address gasReceiver_, address protocolAddress_) AxelarExecutable(gateway_) {
-        gasService = IAxelarGasService(gasReceiver_);
-        protocolAddress = protocolAddress_;
+    struct Vote {
+        string description;
+        address newContract;
+        uint256 end;
+        uint256 yes;
+        uint256 no;
     }
 
-    function vote(uint256 voteId_, bool yes_) public {
-        require(voteIdToEnd[voteId_] > 0, 'Invalid Vote ID');
-        require(voteIdToEnd[voteId_] < block.timestamp, 'Voting period has ended');
+    uint256 currentVoteId = 0;
+    mapping(uint256 => Vote) voteIdToVote;
 
-        if (yes_) {
-            voteIdToVoteYes[voteId_] += 1;
-        } else {
-            voteIdToVoteNo[voteId_] += 1;
+    struct Protocol {
+        address gateway;
+        string destinationChain;
+        string protocolAddress;
+    }
+
+    Protocol[] protocols;
+    
+    constructor(address[] memory gateways_, string[] memory destinationChains_, string[] memory protocols_) {
+        for (uint i = 0; i < gateways_.length; i += 1) {
+            protocols.push(Protocol(gateways_[i], destinationChains_[i], protocols_[i]));
         }
     }
 
-    function createVote(uint256 end_) public {
-        voteIdToEnd[currentVoteId] = end_;
+    function getCurrentVoteId() public view returns(uint256) {
+        return currentVoteId;
+    }
+
+    function getVote(uint256 voteId_) public view returns(Vote memory) {
+        return voteIdToVote[voteId_];
+    }
+
+    function createVote(uint256 end_, string memory description_, address newContract_) public {
+        voteIdToVote[currentVoteId] = Vote(description_, newContract_, end_, 0, 0);
         currentVoteId += 1;
     }
 
-    function _execute(string calldata sourceChain_, string calldata sourceAddress_, bytes calldata payload_) internal override{
-        address newAddress = abi.decode(payload_, (address));
-        protocolAddress = newAddress;
+    function castVote(uint256 voteId_, bool yes_) public {
+        require(voteIdToVote[voteId_].end > 0, 'Invalid Vote ID');
+        require(voteIdToVote[voteId_].end < block.timestamp, 'Voting period has ended');
+
+        if (yes_) {
+            voteIdToVote[voteId_].yes += 1;
+        } else {
+            voteIdToVote[voteId_].no += 1;
+        }
+    }
+
+    function endVote(uint256 voteId_) public {
+        require(voteIdToVote[voteId_].end >= block.timestamp, 'Voting period has not ended');
+
+        if (voteIdToVote[voteId_].yes > voteIdToVote[voteId_].no) {
+            for (uint i = 0; i < protocols.length; i += 1) {
+                bytes memory payload = abi.encode(voteIdToVote[voteId_].newContract);
+                IAxelarGateway(protocols[i].gateway).callContract(protocols[i].destinationChain, protocols[i].protocolAddress, payload);
+            }
+        }
     }
 }
