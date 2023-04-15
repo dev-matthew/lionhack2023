@@ -22,4 +22,8 @@ contract Protocol is AxelarExecutable {
         address newAddress = abi.decode(payload_, (address));
         logicAddress = newAddress;
     }
+
+    function getLogicAddress() public view returns(address) {
+        return logicAddress;
+    }
 }

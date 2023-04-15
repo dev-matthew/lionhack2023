@@ -15,6 +15,11 @@ module.exports = {
       gasPrice: 225000000000,
       chainId: 43113,
       accounts: [process.env.TEST_PRIVATE_KEY]
+    },
+    arbitrum_goerli: {
+      url: 'https://goerli-rollup.arbitrum.io/rpc',
+      chainId: 421613,
+      accounts: [process.env.TEST_PRIVATE_KEY]
     }
   }
 };
