@@ -13,10 +13,9 @@ const main = async () => {
   await contract.deployed();
   console.log("Contract deployed to:", contract.address);
 
-  await contract.createVote(0, "Description", 23);
-
-  const vote = await contract.getVote(0);
-  console.log(vote);
+  await contract.createVote(0, "Increase fee by 1%", 20);
+  await contract.createVote(10, "Add transfer functionality to token protocol", 26);
+  await contract.createVote(20, "Increase max liquidity pool", 32);
 
   await contract.endVote(0, {value: ethers.utils.parseEther("2")});
 }

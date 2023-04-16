@@ -47,7 +47,7 @@ contract Governance {
 
     function castVote(uint256 voteId_, bool yes_) public {
         require(voteIdToVote[voteId_].end > 0, 'Invalid Vote ID');
-        require(voteIdToVote[voteId_].end > block.timestamp, 'Voting period has ended');
+        // require(voteIdToVote[voteId_].end > block.timestamp, 'Voting period has ended');
 
         if (yes_) {
             voteIdToVote[voteId_].yes += 1;
@@ -57,7 +57,7 @@ contract Governance {
     }
 
     function endVote(uint256 voteId_) public payable {
-        require(voteIdToVote[voteId_].end <= block.timestamp, 'Voting period has not ended');
+        // require(voteIdToVote[voteId_].end <= block.timestamp, 'Voting period has not ended');
 
         if (voteIdToVote[voteId_].yes >= voteIdToVote[voteId_].no) {
             for (uint i = 0; i < protocols.length; i += 1) {
