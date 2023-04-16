@@ -1,15 +1,13 @@
 import './App.css';
 import { OnboardingButton } from './onboarding.js';
-import ProposalList from './ProposalList.js';
-
-
 import '@rainbow-me/rainbowkit/styles.css';
 
 import React from 'react'
 import { ethers } from 'ethers'
 
-  const contractAbi = [
-  {
+
+const contractAbi = [
+    {
       "inputs": [
         {
           "internalType": "address[]",
@@ -66,9 +64,9 @@ import { ethers } from 'ethers'
           "type": "string"
         },
         {
-          "internalType": "address",
-          "name": "newContract_",
-          "type": "address"
+          "internalType": "uint256",
+          "name": "newNumber_",
+          "type": "uint256"
         }
       ],
       "name": "createVote",
@@ -120,9 +118,9 @@ import { ethers } from 'ethers'
               "type": "string"
             },
             {
-              "internalType": "address",
-              "name": "newContract",
-              "type": "address"
+              "internalType": "uint256",
+              "name": "newNumber",
+              "type": "uint256"
             },
             {
               "internalType": "uint256",
@@ -148,9 +146,9 @@ import { ethers } from 'ethers'
       "stateMutability": "view",
       "type": "function"
     }
-  
-            ];
-  const contractAddress = "0x52AACf568ddC7A11d6790bca8217544836e14477"; // on Fuji (avalanche testnet)
+  ];
+  const contractAddress = "0xEa7fb821a0Af157080E53579225Df3d5a8AbBFE4"; // on Fuji (avalanche testnet)
+
 
   class App extends React.Component {
   constructor () {
@@ -160,10 +158,17 @@ import { ethers } from 'ethers'
       isConnected: false,
       contract: null,
       currentVoteId: 0,
+      votes: {}
     }
 
-    this.onConnected = this.onConnected.bind(this)
-    this.fetchCurrentVoteID = this.fetchCurrentVoteID.bind(this)
+    this.onConnected = this.onConnected.bind(this);
+    this.fetchCurrentVoteID = this.fetchCurrentVoteID.bind(this);
+    this.fetchVoteDetails = this.fetchVoteDetails.bind(this);
+  }
+
+  componentDidMount() {
+    this.onConnected();
+    console.log("mounted")
   }
 
   async onConnected () {
@@ -177,7 +182,7 @@ import { ethers } from 'ethers'
       contractAbi,
       provider.getSigner()
     )
-    console.log("why this shti")
+    console.log("trigger")
 
     this.setState({
       isConnected: true,
@@ -185,37 +190,99 @@ import { ethers } from 'ethers'
     })
 
     // Fetch the current message
-    await this.fetchCurrentVoteID()
+    await this.fetchCurrentVoteID();
   }
 
-  async fetchCurrentVoteID () {
-    console.log('fetchCurrentVoteID')
-    this.setState({ currentVoteId: await this.state.contract.getCurrentVoteId() })
+  componentDidUpdate(prevProps, prevState) {
+    // Check if state has updated
+    if (this.state.contract !== prevState.contract) {
+      // Run code that depends on updated state
+      console.log("wefwefwf")
+      this.fetchCurrentVoteID();
+    }
   }
+
+
+  async fetchVoteDetails(voteId) {
+    console.log('fetchVoteDetails', voteId);
+    const vote = await this.state.contract.getVote(voteId);
+    this.setState(prevState => ({
+      votes: {
+        ...prevState.votes,
+        [voteId]: vote
+      }
+    }));
+  }
+
+  async fetchCurrentVoteID() {
+    // componentDidUpdate(prevProps, prevState)
+  console.log("big balls")
+  console.log(this.state.contract );
+  const currentVoteId = await this.state.contract.getCurrentVoteId().then((res) => {console.log('dfsd')});
+  this.setState({ currentVoteId: currentVoteId.toNumber() });
+
+  // Fetch vote details for all votes from 0 to currentVoteId
+  console.log(currentVoteId.toNumber())
+  console.log(this.state.currentVoteId)
+
+  for (let i = 0; i <= this.state.currentVoteId.toNumber(); i++) {
+    console.log('dfdf')
+    await this.fetchVoteDetails(i);
+  }
+}
 
   render () {
     console.log('render', this.state)
-    // const MessageComponent = <div>
-    //   {this.state.currentVoteId
-    //     ? <p>📯📯📯 Current message: 📯📯📯<br />&ldquo;{1}&rdquo;</p>
-    //     : <p>Loading message...</p>
-    //   }
-    // </div>
-
     return (
       <div className="App">
         <h1>Cross-Chain Governance Propogation</h1>
         <p>Enables governance decisions for one protocol to propogate to all other chains</p>
 
         <OnboardingButton onConnected={this.onConnected} />
-        <ProposalList/>
+
+        {this.state.isConnected && (
+          <div className="card">
+            <h2 className="card-subtitle">Proposal List</h2>
+            <VotesTable votes={this.state.votes} />
+          </div>
+        )}
         
-
-
-        {/* {this.state.isConnected && MessageComponent} */}
       </div>
     )
   }
 }
+
+function VotesTable({ votes }) {
+  if (Object.keys(votes).length === 0) {
+    return <p>Loading votes...</p>;
+  }
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Vote ID</th>
+          <th>Description</th>
+          <th>New Number</th>
+          <th>End</th>
+          <th>Yes</th>
+          <th>No</th>
+        </tr>
+      </thead>
+      <tbody>
+        {Object.entries(votes).map(([voteId, vote]) => (
+          <tr key={voteId}>
+            <td>{voteId}</td>
+            <td>{vote.description}</td>
+            <td>{vote.newNumber}</td>
+            <td>{vote.end}</td>
+            <td>{vote.yes}</td>
+            <td>{vote.no}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
 
 export default App
