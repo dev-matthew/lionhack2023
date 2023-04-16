@@ -8,19 +8,38 @@ body {
   animation: gradient 10s ease-in-out infinite alternate;
 }
 
-/* @keyframes gradient {
-  0% {
-    background: linear-gradient(to right, #8B0000, #000000);
-  }
+.card {
+  background-color: #8B0000;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  margin: 20px 0;
+  padding: 20px;
+}
 
-  50% {
-    background: linear-gradient(to right, #000000, #8B0000);
-  }
+.card-subtitle {
+  margin: 0 0 10px;
+}
 
-  100% {
-    background: linear-gradient(to right, #8B0000, #000000);
-  }
-} */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #8B0000;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
 
 header {
   text-align: center;

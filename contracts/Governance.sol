@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import { IAxelarGateway } from '@axelar-network/axelar-gmp-sdk-solidity/contracts/interfaces/IAxelarGateway.sol';
-import { IAxelarGasService } from '@axelar-network/axelar-gmp-sdk-solidity/contracts/interfaces/IAxelarGasService.sol';
+import {IAxelarGateway} from "@axelar-network/axelar-gmp-sdk-solidity/contracts/interfaces/IAxelarGateway.sol";
+import {IAxelarGasService} from "@axelar-network/axelar-gmp-sdk-solidity/contracts/interfaces/IAxelarGasService.sol";
 
 contract Governance {
-
     struct Vote {
         string description;
-        uint256 newNumber;
+        address newProxy;
         uint256 end;
         uint256 yes;
         uint256 no;
@@ -25,23 +24,39 @@ contract Governance {
     }
 
     Protocol[] protocols;
-    
-    constructor(address[] memory gateways_, string[] memory destinationChains_, string[] memory protocols_, address[] memory gasReceivers_) {
+
+    constructor(
+        address[] memory gateways_,
+        string[] memory destinationChains_,
+        string[] memory protocols_,
+        address[] memory gasReceivers_
+    ) {
         for (uint i = 0; i < gateways_.length; i += 1) {
-            protocols.push(Protocol(gateways_[i], destinationChains_[i], protocols_[i], IAxelarGasService(gasReceivers_[i])));
+            protocols.push(
+                Protocol(
+                    gateways_[i],
+                    destinationChains_[i],
+                    protocols_[i],
+                    IAxelarGasService(gasReceivers_[i])
+                )
+            );
         }
     }
 
-    function getCurrentVoteId() public view returns(uint256) {
+    function getCurrentVoteId() public view returns (uint256) {
         return currentVoteId;
     }
 
-    function getVote(uint256 voteId_) public view returns(Vote memory) {
+    function getVote(uint256 voteId_) public view returns (Vote memory) {
         return voteIdToVote[voteId_];
     }
 
-    function createVote(uint256 end_, string memory description_, uint256 newNumber_) public {
-        voteIdToVote[currentVoteId] = Vote(description_, newNumber_, end_, 0, 0);
+    function createVote(
+        uint256 end_,
+        string memory description_,
+        address newProxy_
+    ) public {
+        voteIdToVote[currentVoteId] = Vote(description_, newProxy_, end_, 0, 0);
         currentVoteId += 1;
     }
 
@@ -61,12 +76,13 @@ contract Governance {
 
         if (voteIdToVote[voteId_].yes >= voteIdToVote[voteId_].no) {
             for (uint i = 0; i < protocols.length; i += 1) {
-
-                uint256 newNum = voteIdToVote[voteId_].newNumber;
-                bytes memory payload = abi.encode(newNum);
+                address newProxy = voteIdToVote[voteId_].newProxy;
+                bytes memory payload = abi.encode(newProxy);
 
                 if (msg.value > 0) {
-                    protocols[i].gasSerivce.payNativeGasForContractCall{ value: msg.value }(
+                    protocols[i].gasSerivce.payNativeGasForContractCall{
+                        value: msg.value
+                    }(
                         address(this),
                         protocols[i].destinationChain,
                         protocols[i].protocolAddress,
@@ -75,7 +91,11 @@ contract Governance {
                     );
                 }
 
-                IAxelarGateway(protocols[i].gateway).callContract(protocols[i].destinationChain, protocols[i].protocolAddress, payload);
+                IAxelarGateway(protocols[i].gateway).callContract(
+                    protocols[i].destinationChain,
+                    protocols[i].protocolAddress,
+                    payload
+                );
             }
         }
     }
