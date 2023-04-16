@@ -61,7 +61,7 @@ contract Governance {
     }
 
     function castVote(uint256 voteId_, bool yes_) public {
-        require(voteIdToVote[voteId_].end > 0, 'Invalid Vote ID');
+        // require(voteIdToVote[voteId_].end > 0, "Invalid Vote ID");
         // require(voteIdToVote[voteId_].end > block.timestamp, 'Voting period has ended');
 
         if (yes_) {

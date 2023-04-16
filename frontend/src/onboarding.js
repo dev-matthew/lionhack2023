@@ -83,7 +83,7 @@ export class OnboardingButton extends React.Component {
       // Ask the user to connect to MetaMask.
       return (
         <div>
-          <div>To run this dApp you need to connect your MetaMask Wallet.</div>
+          <div>To run this dApp you need to connect your wallet.</div>
           <button onClick={this.connectMetaMask}>
             Connect your Wallet
           </button>

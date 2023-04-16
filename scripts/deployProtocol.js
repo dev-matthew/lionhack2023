@@ -7,7 +7,7 @@ const main = async () => {
   const fuji_gas = "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6";
   const zero_address = "0x0000000000000000000000000000000000000000";
 
-  const contract = await contractFactory.deploy(fuji_gateway, fuji_gas, 12);
+  const contract = await contractFactory.deploy(fuji_gateway, fuji_gas, zero_address);
   await contract.deployed();
   console.log("Contract deployed to:", contract.address);
 }
