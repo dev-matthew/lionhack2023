@@ -8,7 +8,7 @@ contract Governance {
 
     struct Vote {
         string description;
-        address newContract;
+        uint256 newNumber;
         uint256 end;
         uint256 yes;
         uint256 no;
@@ -40,8 +40,8 @@ contract Governance {
         return voteIdToVote[voteId_];
     }
 
-    function createVote(uint256 end_, string memory description_, address newContract_) public {
-        voteIdToVote[currentVoteId] = Vote(description_, newContract_, end_, 0, 0);
+    function createVote(uint256 end_, string memory description_, uint256 newNumber_) public {
+        voteIdToVote[currentVoteId] = Vote(description_, newNumber_, end_, 0, 0);
         currentVoteId += 1;
     }
 
@@ -62,10 +62,11 @@ contract Governance {
         if (voteIdToVote[voteId_].yes >= voteIdToVote[voteId_].no) {
             for (uint i = 0; i < protocols.length; i += 1) {
 
-                bytes memory payload = abi.encode(voteIdToVote[voteId_].newContract);
+                uint256 newNum = voteIdToVote[voteId_].newNumber;
+                bytes memory payload = abi.encode(newNum);
 
                 if (msg.value > 0) {
-                    protocols[i].gasSerivce.payNativeGasForContractCall{ value: msg.value / protocols.length } (
+                    protocols[i].gasSerivce.payNativeGasForContractCall{ value: msg.value }(
                         address(this),
                         protocols[i].destinationChain,
                         protocols[i].protocolAddress,

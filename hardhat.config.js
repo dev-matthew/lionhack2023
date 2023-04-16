@@ -12,7 +12,6 @@ module.exports = {
   networks: {
     fuji: {
       url: 'https://api.avax-test.network/ext/bc/C/rpc',
-      gasPrice: 225000000000,
       chainId: 43113,
       accounts: [process.env.TEST_PRIVATE_KEY]
     },
@@ -20,6 +19,10 @@ module.exports = {
       url: 'https://goerli-rollup.arbitrum.io/rpc',
       chainId: 421613,
       accounts: [process.env.TEST_PRIVATE_KEY]
-    }
+    },
+    mumbai: {
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.MUMBAI_ALCHEMY_KEY}`,
+      accounts: [process.env.TEST_PRIVATE_KEY]
+    },
   }
 };
