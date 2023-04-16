@@ -1,0 +1,103 @@
+// import React from 'react';
+// import ReactDOM from 'react-dom';
+// import './index.css';
+
+// class Dashboard extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       sourceChain: '',
+//       sourceAddress: '',
+//       payload: '',
+//       transactions: [],
+//     };
+//   }
+
+//   handleSubmit = (event) => {
+//     event.preventDefault();
+//     const { sourceChain, sourceAddress, payload } = this.state;
+//     // Send the transaction to the blockchain
+//     // ...
+
+//     // Update the list of transactions
+//     const transaction = { sourceChain, sourceAddress, payload };
+//     this.setState((prevState) => ({
+//       transactions: [transaction, ...prevState.transactions],
+//     }));
+//   };
+
+//   handleInputChange = (event) => {
+//     const { name, value } = event.target;
+//     this.setState({ [name]: value });
+//   };
+
+//   render() {
+//     const { sourceChain, sourceAddress, payload, transactions } = this.state;
+
+//     return (
+//       <div className="dashboard">
+//         <header>
+//           <h1>Blockchain Voters Cross-Chain Governance Dashboard</h1>
+//           <p>A dashboard for updating voting cross-chain</p>
+//         </header>
+//         <div className="modules">
+//           <div className="left-module">
+//             <h2 className="module-header">
+//               Input Fields to Update Voting Cross-Chain
+//             </h2>
+//             <form onSubmit={this.handleSubmit}>
+//               <div className="form-group">
+//                 <label htmlFor="sourceChain">Source Chain:</label>
+//                 <select
+//                   id="sourceChain"
+//                   name="sourceChain"
+//                   value={sourceChain}
+//                   onChange={this.handleInputChange}
+//                 >
+//                   <option value="">Select a chain</option>
+//                   <option value="chain1">Chain 1</option>
+//                   <option value="chain2">Chain 2</option>
+//                   <option value="chain3">Chain 3</option>
+//                 </select>
+//               </div>
+//               <div className="form-group">
+//                 <label htmlFor="sourceAddress">Source Address:</label>
+//                 <input
+//                   id="sourceAddress"
+//                   name="sourceAddress"
+//                   type="text"
+//                   value={sourceAddress}
+//                   onChange={this.handleInputChange}
+//                 />
+//               </div>
+//               <div className="form-group">
+//                 <label htmlFor="payload">Payload:</label>
+//                 <textarea
+//                   id="payload"
+//                   name="payload"
+//                   value={payload}
+//                   onChange={this.handleInputChange}
+//                 />
+//               </div>
+//               <button type="submit">Submit</button>
+//             </form>
+//           </div>
+//           <div className="right-module">
+//             <h2 className="module-header">Transaction List</h2>
+//             <ul className="transaction-list">
+//               {transactions.map((transaction, index) => (
+//                 <li key={index} className="transaction-item">
+//                   <p>Source Chain: {transaction.sourceChain}</p>
+//                   <p>Source Address: {transaction.sourceAddress}</p>
+//                   <p>Payload: {transaction.payload}</p>
+//                 </li>
+//               ))}
+//             </ul>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+// }
+
+// ReactDOM.render(<Dashboard />, document.getElementById('root'));
