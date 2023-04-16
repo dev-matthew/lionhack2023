@@ -6,7 +6,7 @@ const main = async () => {
   // gateways, destinations, protocols, gas receivers
   const gateways = ["0xC249632c2D40b9001FE907806902f63038B737Ab"];
   const destinations = ["arbitrum"];
-  const protocols = ["0xd691Bc30DbAD08D02077d47522e8F80fE31B8692"];
+  const protocols = ["0x166f65a4948111f91e034Ed93320F5432f5b637B"];
   const gas_receivers = ["0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6"];
 
   const contract = await contractFactory.deploy(gateways, destinations, protocols, gas_receivers);
@@ -14,8 +14,6 @@ const main = async () => {
   console.log("Contract deployed to:", contract.address);
 
   await contract.createVote(0, "Increase fee by 1%", 20);
-  await contract.createVote(10, "Add transfer functionality to token protocol", 26);
-  await contract.createVote(20, "Increase max liquidity pool", 32);
 
   await contract.endVote(0, {value: ethers.utils.parseEther("2")});
 }

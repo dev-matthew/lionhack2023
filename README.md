@@ -1,4 +1,12 @@
-# lionhack2023
+<img src="./icon.png" width="300">
+
+# GovernNet 🌐
+
+## About
+GovernNet is a protocol that enables a protocol's governance decisions to propogate to other chains from one hub.
+
+When certain protocols are present on multiple blockchains, it can be hard to manage their updates and developments across each chain. GovernNet solves this problem by building governance mechanisms on one chain (Avalanche). Decisions that are made on this chain can then propogate via Axelar to other chains. This is done by sending messages containing updates to the protocol's smart contracts on other chains. Oftentimes, when a protocol's community votes for a certain change, it still requires someone else to actually go and implement those changes, and across various blockchains. With our GovernNet, however, users can deploy updates in advance and trigger updates to the protocols if the votes are approved by the majority or other voting mechanism. This allows for faster turnaround regarding protocol updates and increased decentralization.
+
 
 ## Axelar Submission Information
 1. Transaction link: https://testnet.axelarscan.io/gmp/0x645a67b15d35e1ff26a865098f2c01ef124cc46bbaa3a2f5f4318a89a70a3ce5:1
