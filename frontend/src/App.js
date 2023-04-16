@@ -1,5 +1,7 @@
 import './App.css';
 import { OnboardingButton } from './onboarding.js';
+import ProposalList from './ProposalList.js';
+
 
 import '@rainbow-me/rainbowkit/styles.css';
 
@@ -175,12 +177,11 @@ import { ethers } from 'ethers'
       contractAbi,
       provider.getSigner()
     )
+    console.log("why this shti")
 
     this.setState({
       isConnected: true,
       contract,
-    }, () => {
-      // Start fetching the contract's message every 30 seconds
     })
 
     // Fetch the current message
@@ -193,21 +194,25 @@ import { ethers } from 'ethers'
   }
 
   render () {
-    const MessageComponent = <div>
-      {this.state.currentVoteId
-        ? <p>📯📯📯 Current message: 📯📯📯<br />&ldquo;{this.state.currentVoteId}&rdquo;</p>
-        : <p>Loading message...</p>
-      }
-    </div>
+    console.log('render', this.state)
+    // const MessageComponent = <div>
+    //   {this.state.currentVoteId
+    //     ? <p>📯📯📯 Current message: 📯📯📯<br />&ldquo;{1}&rdquo;</p>
+    //     : <p>Loading message...</p>
+    //   }
+    // </div>
 
     return (
       <div className="App">
-        <h1>My Awesome dApp</h1>
-        <h2>HelloWorld on Avalanche</h2>
+        <h1>Cross-Chain Governance Propogation</h1>
+        <p>Enables governance decisions for one protocol to propogate to all other chains</p>
 
         <OnboardingButton onConnected={this.onConnected} />
+        <ProposalList/>
+        
 
-        {this.state.isConnected && MessageComponent}
+
+        {/* {this.state.isConnected && MessageComponent} */}
       </div>
     )
   }

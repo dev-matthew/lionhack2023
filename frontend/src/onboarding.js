@@ -4,7 +4,7 @@ import MetaMaskOnboarding from '@metamask/onboarding'
 
 const AVALANCHE_TESTNET_PARAMS = {
   chainId: '0xA869',
-  chainName: 'Avalanche Fuji Testnet C-Chain',
+  chainName: 'Avalanche Testnet C-Chain',
   nativeCurrency: {
     name: 'Avalanche',
     symbol: 'AVAX',
@@ -58,15 +58,6 @@ export class OnboardingButton extends React.Component {
           this.props.onConnected()
         }
       });
-
-    //   window.ethereum
-    //   .request({ method: 'eth_chainId' })
-    //   .then((chainId) => {
-    //     this.setState({ chainId });
-    //     if (isAvalancheChain(chainId)) {
-    //       this.props.onConnected();
-    //     }
-    //   });
     }
   }
 
