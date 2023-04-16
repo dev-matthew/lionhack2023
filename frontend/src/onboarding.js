@@ -2,18 +2,6 @@
 import React from 'react'
 import MetaMaskOnboarding from '@metamask/onboarding'
 
-// Avalanche Network information for automatic onboarding in MetaMask
-// const AVALANCHE_MAINNET_PARAMS = {
-//   chainId: '0xA86A',
-//   chainName: 'Avalanche Mainnet C-Chain',
-//   nativeCurrency: {
-//     name: 'Avalanche',
-//     symbol: 'AVAX',
-//     decimals: 18
-//   },
-//   rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'],
-//   blockExplorerUrls: ['https://snowtrace.io/']
-// }
 const AVALANCHE_TESTNET_PARAMS = {
   chainId: '0xA869',
   chainName: 'Avalanche Fuji Testnet C-Chain',
@@ -69,7 +57,16 @@ export class OnboardingButton extends React.Component {
           // Avalanche chain selected.
           this.props.onConnected()
         }
-      })
+      });
+
+    //   window.ethereum
+    //   .request({ method: 'eth_chainId' })
+    //   .then((chainId) => {
+    //     this.setState({ chainId });
+    //     if (isAvalancheChain(chainId)) {
+    //       this.props.onConnected();
+    //     }
+    //   });
     }
   }
 
